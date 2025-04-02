@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <title>O2genes Therapy</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        :root {
+            --primary-green: #1C4E3B; /* Ralph Lauren deep green */
+            --accent-blue: #6EA5B1;
+            --light-green: #3a6f5c;
+            --cream: #F7F3E9;
+            --white: #FFFFFF;
+            --gray: #E5E5E5;
+        }
+        
+        body {
+            background-color: var(--cream);
+            color: var(--primary-green);
+            position: relative;
+            overflow-x: hidden;
+            min-height: 100vh;
+            width: 100%;
+        }
+        
+        /* Animated background effect - oxygen flowing */
+        .oxygen-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+            pointer-events: none;
+            background: linear-gradient(to bottom, transparent, rgba(110, 165, 177, 0.1));
+            -webkit-transform: translateZ(0); /* iOS fix for position:fixed */
+            transform: translateZ(0);
+        }
+        
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            opacity: 0.4;
+            animation: float 15s infinite ease-in-out;
+            box-shadow: 0 0 10px rgba(110, 165, 177, 0.8);
+        }
+        
+        @keyframes float {
+            0% {
+                -webkit-transform: translateY(100vh) scale(0);
+                transform: translateY(100vh) scale(0);
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 0.6;
+            }
+            100% {
+                -webkit-transform: translateY(-20vh) scale(1);
+                transform: translateY(-20vh) scale(1);
+                opacity: 0;
+            }
+        }
+        
+        /* Floating particles */
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(110,165,177,0.4) 100%);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particleFloat 12s infinite linear;
+        }
+        
+        @keyframes particleFloat {
+            0% {
+                transform: translate(0, 0);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.6;
+            }
+            80% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translate(var(--x), var(--y));
+                opacity: 0;
+            }
+        }
+        
+        /* Loading Screen */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--primary-green);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1s ease;
+            -webkit-transform: translateZ(0); /* iOS fix for position:fixed */
+            transform: translateZ(0);
+        }
+        
+        .loading-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-green);
+            font-weight: bold;
+            font-size: 30px;
+            animation: breathe 2s infinite ease-in-out;
+            margin-bottom: 20px;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+        }
+        
+        .loading-text {
+            color: var(--white);
+            font-size: 18px;
+            letter-spacing: 2px;
+        }
+        
+        @keyframes breathe {
+            0% {
+                -webkit-transform: scale(0.95);
+                transform: scale(0.95);
+                box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            }
+            50% {
+                -webkit-transform: scale(1);
+                transform: scale(1);
+                box-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
+            }
+            100% {
+                -webkit-transform: scale(0.95);
+                transform: scale(0.95);
+                box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            }
+        }
+        
+        /* Mobile-friendly layout */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            min-height: 100vh;
+        }
+        
+        /* Mobile header */
+        .mobile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: var(--primary-green);
+            color: var(--white);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            height: 60px;
+        }
+        
+        .menu-toggle {
+            font-size: 24px;
+            background: none;
+            border: none;
+            color: var(--white);
+            cursor: pointer;
+        }
+        
+        .header-brand {
+            display: flex;
+            align-items: center;
+        }
+        
+        .header-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: var(--primary-green);
+            font-weight: bold;
+        }
+        
+        .header-title {
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .user-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-green);
+            font-weight: 500;
+        }
+        
+        /* Sidebar for mobile */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100%;
+            background-color: var(--primary-green);
+            padding: 20px 0;
+            transition: all 0.3s ease;
+            z-index: 101;
+            overflow-y: auto;
+            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .sidebar.active {
+            left: 0;
+        }
+        
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            display: none;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-overlay.active {
+            display: block;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .close-btn {
+            color: var(--white);
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: var(--primary-green);
+            font-weight: bold;
+        }
+        
+        .brand-name {
+            color: var(--white);
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .nav-menu {
+            list-style: none;
+            padding: 10px 20px;
+        }
+        
+        .nav-item {
+            margin-bottom: 15px;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+        }
+        
+        .nav-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        /* Main content area */
+        .main-content {
+            flex: 1;
+            padding: 75px 15px 15px 15px;
+            width: 100%;
+        }
+        
+        .header {
+            margin-bottom: 20px;
+        }
+        
+        .greeting {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-green);
+        }
+        
+        .subtext {
+            color: var(--light-green);
+            margin-top: 5px;
+            font-size: 14px;
+        }
+        
+        /* Dashboard cards */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            background-color: var(--white);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--light-green);
+        }
+        
+        .card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background-color: rgba(28, 78, 59, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-green);
+        }
+        
+        .card-value {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .card-description {
+            color: var(--light-green);
+            font-size: 12px;
+        }
+        
+        /* Humidity card - full width on mobile */
+        .humidity-card {
+            grid-column: 1 / span 2;
+        }
+        
+        /* Therapy mode section */
+        .therapy-section {
+            background-color: var(--white);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .section-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .therapy-modes {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .mode-card {
+            border: 2px solid var(--gray);
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .mode-card:hover {
+            border-color: var(--primary-green);
+            transform: translateY(-3px);
+        }
+        
+        .mode-card.active {
+            background-color: rgba(28, 78, 59, 0.05);
+            border-color: var(--primary-green);
+        }
+        
+        .mode-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: rgba(28, 78, 59, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        
+        .mode-icon i {
+            font-size: 20px;
+            color: var(--primary-green);
+        }
+        
+        .mode-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .mode-description {
+            font-size: 12px;
+            color: var(--light-green);
+        }
+        
+        /* Safety Videos View */
+        .video-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        
+        .video-thumbnail {
+            width: 100%;
+            height: 150px;
+            background-color: var(--gray);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .video-thumbnail::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+        
+        .video-play-icon {
+            position: relative;
+            z-index: 2;
+            font-size: 40px;
+            color: var(--white);
+            background-color: rgba(28, 78, 59, 0.8);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Custom bottom navigation for mobile */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: var(--white);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 99;
+        }
+        
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--light-green);
+            text-decoration: none;
+            padding: 8px 0;
+            width: 20%;
+        }
+        
+        .bottom-nav-item.active {
+            color: var(--primary-green);
+        }
+        
+        .bottom-nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        .bottom-nav-text {
+            font-size: 10px;
+        }
+        
+        /* Tablet adjustments */
+        @media (min-width: 768px) {
+            .main-content {
+                padding: 75px 25px 25px 25px;
+            }
+            
+            .greeting {
+                font-size: 26px;
+            }
+            
+            .cards-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .humidity-card {
+                grid-column: auto;
+            }
+            
+            .therapy-modes {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .video-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* Adjust content for bottom nav */
+        .bottom-spacing {
+            padding-bottom: 70px;
+        }
+        
+        /* Hide active view by default */
+        .content-view {
+            display: none;
+        }
+        
+        .content-view.active {
+            display: block;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-logo">O₂</div>
+        <div class="loading-text">O2GENES THERAPY</div>
+    </div>
+
+    <!-- Animated oxygen background -->
+    <div class="oxygen-bg" id="oxygenBackground"></div>
+    
+    <div class="app-container">
+        <!-- Mobile header -->
+        <header class="mobile-header">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="header-brand">
+                <div class="header-logo">O₂</div>
+                <div class="header-title">O2genes Therapy</div>
+            </div>
+            <div class="user-icon">DJ</div>
+        </header>
+        
+        <!-- Sidebar overlay -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        
+        <!-- Sidebar navigation -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <div class="logo">O₂</div>
+                    <div class="brand-name">O2genes Therapy</div>
+                </div>
+                <button class="close-btn" id="closeBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active" data-view="dashboard">
+                        <i class="fas fa-home"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-view="safety">
+                        <i class="fas fa-video"></i>
+                        Safety Videos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-view="emergency">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Emergency
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-view="theory">
+                        <i class="fas fa-book"></i>
+                        Hyperbaric Theory
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-view="wellness">
+                        <i class="fas fa-heart"></i>
+                        Wellness
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-view="performance">
+                        <i class="fas fa-chart-line"></i>
+                        Performance
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-view="cognitive">
+                        <i class="fas fa-brain"></i>
+                        Cognitive Games
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-view="longevity">
+                        <i class="fas fa-hourglass-half"></i>
+                        Longevity
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-view="settings">
+                        <i class="fas fa-cog"></i>
+                        Settings
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <!-- Main content -->
+        <main class="main-content bottom-spacing" id="mainContent">
+            <!-- Dashboard View -->
+            <div id="dashboard" class="content-view active">
+                <header class="header">
+                    <div>
+                        <h1 class="greeting">Welcome back, Dr. Josh</h1>
+                        <p class="subtext">Control your Cocoon's environment and start your therapy session</p>
+                    </div>
+                </header>
+                
+                <div class="cards-container">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Oxygen Level</h3>
+                            <div class="card-icon">
+                                <i class="fas fa-lungs"></i>
+                            </div>
+                        </div>
+                        <div class="card-value">98%</div>
+                        <div class="card-description">Optimal oxygen concentration</div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Temperature</h3>
+                            <div class="card-icon">
+                                <i class="fas fa-temperature-high"></i>
+                            </div>
+                        </div>
+                        <div class="card-value">22°C</div>
+                        <div class="card-description">Current cocoon temperature</div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Pressure</h3>
+                            <div class="card-icon">
+                                <i class="fas fa-tachometer-alt"></i>
+                            </div>
+                        </div>
+                        <div class="card-value">1.3 ATA</div>
+                        <div class="card-description">Current pressure level</div>
+                    </div>
+                    
+                    <div class="card humidity-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Humidity</h3>
+                            <div class="card-icon">
+                                <i class="fas fa-water"></i>
+                            </div>
+                        </div>
+                        <div class="card-value">42%</div>
+                        <div class="card-description">Current humidity level</div>
+                    </div>
+                </div>
+                
+                <div class="therapy-section">
+                    <h2 class="section-header">Therapy Mode</h2>
+                    <div class="therapy-modes">
+                        <div class="mode-card" data-mode="rest">
+                            <div class="mode-icon">
+                                <i class="fas fa-bed"></i>
+                            </div>
+                            <h3 class="mode-title">Rest & Relax</h3>
+                            <p class="mode-description">Continuous oxygen flow</p>
+                        </div>
+                        
+                        <div class="mode-card" data-mode="wellness">
+                            <div class="mode-icon">
+                                <i class="fas fa-spa"></i>
+                            </div>
+                            <h3 class="mode-title">Health & Wellness</h3>
+                            <p class="mode-description">Intermittent oxygen flow</p>
+                        </div>
+                        
+                        <div class="mode-card" data-mode="recovery">
+                            <div class="mode-icon">
+                                <i class="fas fa-running"></i>
+                            </div>
+                            <h3 class="mode-title">Professional Recovery</h3>
+                            <p class="mode-description">Intermittent oxygen flow</p>
+                        </div>
+                        
+                        <div class="mode-card" data-mode="custom">
+                            <div class="mode-icon">
+                                <i class="fas fa-sliders-h"></i>
+                            </div>
+                            <h3 class="mode-title">Custom</h3>
+                            <p class="mode-description">Continuous oxygen flow</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Safety Videos View -->
+            <div id="safety" class="content-view">
+                <header class="header">
+                    <div>
+                        <h1 class="greeting">Safety Videos</h1>
+                        <p class="subtext">Essential safety information for using your O2genes Therapy Cocoon</p>
+                    </div>
+                </header>
+                
+                <div class="video-container">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Getting Started</h3>
+                            <div class="card-icon">
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                        </div>
+                        <div class="video-thumbnail">
+                            <div class="video-play-icon">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                        <div class="card-description">Basic safety procedures and introduction</div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Pressure Protocols</h3>
+                            <div class="card-icon">
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                        </div>
+                        <div class="video-thumbnail">
+                            <div class="video-play-icon">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                        <div class="card-description">Understanding pressure changes and safe practices</div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Emergency Procedures</h3>
+                            <div class="card-icon">
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                        </div>
+                        <div class="video-thumbnail">
+                            <div class="video-play-icon">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                        <div class="card-description">What to do in case of an emergency</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Emergency View -->
+            <div id="emergency" class="content-view">
+                <header class="header">
+                    <div>
+                        <h1 class="greeting">Emergency Actions</h1>
+                        <p class="subtext">Quick access to emergency procedures and contacts</p>
+                    </div>
+                </header>
+                
+                <div class="card" style="margin-bottom: 15px;">
+                    <div class="card-header">
+                        <h3 class="card-title">Emergency Stop</h3>
+                        <div class="card-icon" style="background-color: rgba(220, 53, 69, 0.1); color: #dc3545;">
+                            <i class="fas fa-stop-circle"></i>
+                        </div>
+                    </div>
+                    <div style="padding: 10px 0;">
+                        <button style="width: 100%; padding: 15px; background-color: #dc3545; color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 16px;">
+                            STOP SESSION IMMEDIATELY
+                        </button>
+                    </div>
+                    <div class="card-description">Use only in case of emergency. This will safely depressurize the cocoon.</div>
+                </div>
+                
+                <div class="card" style="margin-bottom: 15px;">
+                    <div class="card-header">
+                        <h3 class="card-title">Emergency Contacts</h3>
+                        <div class="card-icon" style="background-color: rgba(28, 78, 59, 0.1);">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                    </div>
+                    <div style="padding: 10px 0;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; padding: 10px; border-radius: 8px; background-color: rgba(28, 78, 59, 0.05);">
+                            <div>O2genes Support</div>
+                            <a href="tel:+18001234567" style="color: var(--primary-green); text-decoration: none; font-weight: 500;">+1 (800) 123-4567</a>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 10px; border-radius: 8px; background-color: rgba(28, 78, 59, 0.05);">
+                            <div>Emergency Services</div>
+                            <a href="tel:911" style="color: var(--primary-green); text-decoration: none; font-weight: 500;">911</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Emergency Guide</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                    </div>
+                    <div class="video-thumbnail">
+                        <div class="video-play-icon">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="card-description">Watch emergency response protocol</div>
+                </div>
+            </div>
+            
+            <!-- Hyperbaric Theory View -->
+            <div id="theory" class="content-view">
+                <header class="header">
+                    <div>
+                        <h1 class="greeting">Hyperbaric Theory</h1>
+                        <p class="subtext">Educational videos and resources about hyperbaric therapy</p>
+                    </div>
+                </header>
+                
+                <div class="video-container">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Introduction to HBOT</h3>
+                            <div class="card-icon">
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                        </div>
+                        <div class="video-thumbnail">
+                            <div class="video-play-icon">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                        <div class="card-description">Fundamentals of hyperbaric oxygen therapy</div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Benefits & Research</h3>
+                            <div class="card-icon">
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                        </div>
+                        <div class="video-thumbnail">
+                            <div class="video-play-icon">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                        <div class="card-description">Scientific evidence and benefits</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Wellness View -->
+            <div id="wellness" class="content-view">
+                <header class="header">
+                    <div>
+                        <h1 class="greeting">Wellness</h1>
+                        <p class="subtext">Enhance your wellbeing with our wellness programs</p>
+                    </div>
+                </header>
+                
+                <div class="cards-container" style="grid-template-columns: 1fr;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Relaxation Program</h3>
+                            <div class="card-icon">
+                                <i class="fas fa-spa"></i>
+                            </div>
+                        </div>
+                        <div style="padding: 15px 0;">
+                            <div style="background-color: rgba(28, 78, 59, 0.05); padding: 12px; border-radius: 8px; margin-bottom: 10px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                    <span>Duration:</span>
+                                    <span>60 minutes</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                    <span>Pressure:</span>
+                                    <span>1.3 ATA</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>Oxygen Flow:</span>
+                                    <span>Continuous</span>
+                                </div>
+                            </div>
+                            <button style="width: 100%; padding: 12px; background-color: var(--primary-green); color: white; border: none; border-radius: 8px; font-weight: 500;">
+                                Start Program
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Meditation Support</h3>
+                            <div class="card-icon">
+                                <i class="fas fa-om"></i>
+                            </div>
+                        </div>
+                        <div style="padding: 15px 0;">
+                            <div style="background-color: rgba(28, 78, 59, 0.05); padding: 12px; border-radius: 8px; margin-bottom: 10px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                    <span>Duration:</span>
+                                    <span>45 minutes</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                    <span>Pressure:</span>
+                                    <span>1.2 ATA</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>Oxygen Flow:</span>
+                                    <span>Intermittent</span>
+                                </div>
+                            </div>
+                            <button style="width: 100%; padding: 12px; background-color: var(--primary-green); color: white; border: none; border-radius: 8px; font-weight: 500;">
+                                Start Program
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Bottom Navigation for Mobile -->
+        <nav class="bottom-nav">
+            <a href="#" class="bottom-nav-item active" data-view="dashboard">
+                <i class="fas fa-home"></i>
+                <span class="bottom-nav-text">Home</span>
+            </a>
+            <a href="#" class="bottom-nav-item" data-view="safety">
+                <i class="fas fa-video"></i>
+                <span class="bottom-nav-text">Safety</span>
+            </a>
+            <a href="#" class="bottom-nav-item" data-view="wellness">
+                <i class="fas fa-heart"></i>
+                <span class="bottom-nav-text">Wellness</span>
+            </a>
+            <a href="#" class="bottom-nav-item" data-view="theory">
+                <i class="fas fa-book"></i>
+                <span class="bottom-nav-text">Theory</span>
+            </a>
+            <a href="#" class="bottom-nav-item" data-view="settings">
+                <i class="fas fa-cog"></i>
+                <span class="bottom-nav-text">Settings</span>
+            </a>
+        </nav>
+    </div>
+    
+    <script>
+        // Create dynamic oxygen particles - optimized for iOS
+        function generateOxygenEffect() {
+            const oxygenBg = document.getElementById('oxygenBackground');
+            
+            if (!oxygenBg) return; // Safety check for iOS
+            
+            // Create fragment to improve performance
+            const fragment = document.createDocumentFragment();
+            
+            // Large bubbles
+            const bubbleCount = 15;
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                
+                // Random properties
+                const size = Math.random() * 80 + 40; // Larger bubbles
+                const left = Math.random() * 100;
+                const duration = Math.random() * 10 + 10;
+                const delay = Math.random() * 15;
+                
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                bubble.style.left = `${left}%`;
+                bubble.style.animationDuration = `${duration}s`;
+                bubble.style.animationDelay = `${delay}s`;
+                
+                // Add to fragment instead of directly to DOM
+                fragment.appendChild(bubble);
+            }
+            
+            // Small particles
+            const particleCount = 30; // Reduced for iOS performance
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random properties
+                const size = Math.random() * 10 + 3;
+                const startX = Math.random() * 100;
+                const startY = Math.random() * 100;
+                const xMove = (Math.random() - 0.5) * 200;
+                const yMove = (Math.random() - 0.5) * 200;
+                const duration = Math.random() * 10 + 5;
+                const delay = Math.random() * 10;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${startX}%`;
+                particle.style.top = `${startY}%`;
+                particle.style.setProperty('--x', `${xMove}px`);
+                particle.style.setProperty('--y', `${yMove}px`);
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.animationDelay = `${delay}s`;
+                
+                // Add to fragment instead of directly to DOM
+                fragment.appendChild(particle);
+            }
+            
+            // Append all elements at once for better performance
+            oxygenBg.appendChild(fragment);
+        }
+        
+        // Toggle sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+        
+        // Navigate to different views
+        function navigateTo(viewId) {
+            // Hide all views
+            const views = document.querySelectorAll('.content-view');
+            views.forEach(view => {
+                view.classList.remove('active');
+            });
+            
+            // Show selected view
+            const targetView = document.getElementById(viewId);
+            if (targetView) {
+                targetView.classList.add('active');
+            }
+            
+            // Update active nav link in sidebar
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.view === viewId) {
+                    link.classList.add('active');
+                }
+            });
+            
+            // Update active bottom nav item
+            const bottomNavItems = document.querySelectorAll('.bottom-nav-item');
+            bottomNavItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.view === viewId) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // Close sidebar after navigation on mobile
+            if (window.innerWidth < 768) {
+                toggleSidebar();
+            }
+        }
+        
+        // Handle therapy mode selection
+        function selectTherapyMode() {
+            const modeCards = document.querySelectorAll('.mode-card');
+            
+            modeCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    modeCards.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    console.log(`Selected mode: ${this.dataset.mode}`);
+                });
+            });
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fix for iOS - ensure document is fully loaded
+            if (document.readyState === 'complete') {
+                initApp();
+            } else {
+                window.addEventListener('load', initApp);
+            }
+            
+            function initApp() {
+                // Generate oxygen effect
+                generateOxygenEffect();
+                
+                // Show loading animation with timeout for iOS
+                setTimeout(function() {
+                    const loadingOverlay = document.getElementById('loadingOverlay');
+                    if (loadingOverlay) {
+                        loadingOverlay.style.opacity = '0';
+                        setTimeout(function() {
+                            loadingOverlay.style.display = 'none';
+                        }, 1000);
+                    }
+                }, 2000);
+            }
+            
+            // Setup event listeners
+            document.getElementById('menuToggle').addEventListener('click', toggleSidebar);
+            document.getElementById('closeBtn').addEventListener('click', toggleSidebar);
+            document.getElementById('sidebarOverlay').addEventListener('click', toggleSidebar);
+            
+            // Setup navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navigateTo(this.dataset.view);
+                });
+            });
+            
+            // Setup bottom navigation
+            document.querySelectorAll('.bottom-nav-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navigateTo(this.dataset.view);
+                });
+            });
+            
+            // Setup therapy mode selection
+            selectTherapyMode();
+            
+            // Display dashboard view by default
+            const views = document.querySelectorAll('.content-view');
+            views.forEach(view => {
+                if (view.id !== 'dashboard') {
+                    view.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
