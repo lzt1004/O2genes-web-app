@@ -1185,6 +1185,418 @@
             align-items: center;
             justify-content: center;
         }
+
+        /* Therapy Mode Cards - Make them clickable with visual feedback */
+        .mode-card {
+            cursor: pointer;
+            transition: all 0.25s ease;
+            border: 2px solid var(--gray);
+        }
+
+        .mode-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
+            border-color: var(--accent-blue);
+        }
+
+        .mode-card.active {
+            background-color: rgba(28, 78, 59, 0.08);
+            border-color: var(--primary-green);
+            transform: translateY(-3px);
+        }
+
+        /* Style for range sliders */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background-color: var(--gray);
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--primary-green);
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--primary-green);
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            border: none;
+        }
+
+        /* Make buttons appear clickable */
+        button {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+        }
+
+        /* Add session progress bar styling */
+        .progress-container {
+            background-color: var(--gray);
+            height: 8px;
+            border-radius: 4px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary-green);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* Session controls styling */
+        .session-controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .control-btn {
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            color: white;
+            font-weight: 500;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .control-btn i {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .equalize-btn {
+            background-color: var(--accent-blue);
+        }
+
+        .intercom-btn {
+            background-color: var(--light-green);
+        }
+
+        .stop-btn {
+            background-color: #dc3545;
+        }
+
+        /* Modal for alerts and confirmations */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .modal-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-green);
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-cancel {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--gray);
+            background-color: var(--white);
+            color: var(--primary-green);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .modal-confirm {
+            flex: 1;
+            padding: 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Styles for session info displays */
+        .session-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background-color: rgba(28, 78, 59, 0.05);
+            border-radius: 8px;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: var(--light-green);
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: var(--primary-green);
+        }
+
+        /* Status indicators */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+
+        .status-paused {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+
+        .status-inactive {
+            background-color: rgba(108, 117, 125, 0.1);
+            color: #6c757d;
+        }
+
+        /* Animation for pressurizing effect */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+        }
+
+        .pressurizing-icon {
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        /* Selected therapy mode overview styles */
+        .selection-overview {
+            background-color: rgba(28, 78, 59, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid var(--primary-green);
+        }
+
+        .selection-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary-green);
+        }
+
+        .selection-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .selection-detail-label {
+            color: var(--light-green);
+        }
+
+        .selection-detail-value {
+            font-weight: 500;
+        }
+
+        /* Animation for transition between steps */
+        .step-transition {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Confirmation screen styles */
+        .confirmation-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            font-size: 24px;
+        }
+
+        .confirmation-title {
+            text-align: center;
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--primary-green);
+        }
+
+        .confirmation-message {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--light-green);
+        }
+
+        /* Emergency button styles */
+        .emergency-button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            padding: 15px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .emergency-button:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(220, 53, 69, 0.4);
+        }
+
+        .emergency-button:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 8px rgba(220, 53, 69, 0.3);
+        }
+
+        /* Active button states */
+        .btn-active {
+            background-color: #28a745 !important;
+        }
+
+        /* Toast notification styles */
+        .toast {
+            position: fixed;
+            bottom: 80px; /* Above bottom nav */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            z-index: 9999;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+            font-weight: 500;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                bottom: 60px;
+                opacity: 0;
+            }
+            to {
+                bottom: 80px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -1977,21 +2389,459 @@
             if (window.innerWidth < 768) {
                 toggleSidebar();
             }
+            
+            // Re-initialize therapy mode selection if navigating to dashboard
+            if (viewId === 'dashboard') {
+                setTimeout(() => {
+                    initTherapyModeSelection();
+                }, 100);
+            }
         }
-        
+
         // Handle therapy mode selection
-        function selectTherapyMode() {
+        function initTherapyModeSelection() {
             const modeCards = document.querySelectorAll('.mode-card');
             
             modeCards.forEach(card => {
                 card.addEventListener('click', function() {
-                    modeCards.forEach(c => c.classList.remove('active'));
-                    this.classList.add('active');
-                    console.log(`Selected mode: ${this.dataset.mode}`);
+                    const selectedMode = this.dataset.mode;
+                    console.log(`Selected mode: ${selectedMode}`);
+                    
+                    // Begin the selection workflow
+                    showPressureSelection(selectedMode);
                 });
             });
         }
         
+        function showPressureSelection(mode) {
+            // Create and show pressure selection UI
+            const mainContent = document.getElementById('dashboard');
+            
+            // Save current dashboard content to restore if user cancels
+            const previousContent = mainContent.innerHTML;
+            
+            // Create pressure selection UI
+            mainContent.innerHTML = `
+                <header class="header">
+                    <div>
+                        <h1 class="greeting">Select Pressure</h1>
+                        <p class="subtext">${getPressureSubtext(mode)}</p>
+                    </div>
+                </header>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Pressure Selection</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                    </div>
+                    
+                    <div style="padding: 15px 0;">
+                        <div style="margin-bottom: 15px;">
+                            <input type="range" id="pressureSlider" min="100" max="200" step="10" value="130" style="width: 100%;">
+                            <div style="display: flex; justify-content: space-between; margin-top: 8px;">
+                                <span>1.00 ATA</span>
+                                <span id="pressureValue">1.30 ATA</span>
+                                <span>2.00 ATA</span>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px;">
+                            <button id="pressureBackBtn" style="flex: 1; padding: 12px; background-color: var(--gray); color: var(--primary-green); border: none; border-radius: 8px; font-weight: 500;">
+                                Back
+                            </button>
+                            <button id="pressureNextBtn" style="flex: 2; padding: 12px; background-color: var(--primary-green); color: white; border: none; border-radius: 8px; font-weight: 500;">
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Add event listeners to new elements
+            document.getElementById('pressureSlider').addEventListener('input', function() {
+                const value = (this.value / 100).toFixed(2);
+                document.getElementById('pressureValue').textContent = `${value} ATA`;
+            });
+            
+            document.getElementById('pressureBackBtn').addEventListener('click', function() {
+                // Restore previous content
+                mainContent.innerHTML = previousContent;
+                // Reinitialize therapy mode selection
+                initTherapyModeSelection();
+            });
+            
+            document.getElementById('pressureNextBtn').addEventListener('click', function() {
+                const pressure = parseFloat(document.getElementById('pressureSlider').value) / 100;
+                showCompressionRateSelection(mode, pressure);
+            });
+        }
+
+        function showCompressionRateSelection(mode, pressure) {
+            const mainContent = document.getElementById('dashboard');
+            
+            mainContent.innerHTML = `
+                <header class="header">
+                    <div>
+                        <h1 class="greeting">Select Compression Rate</h1>
+                        <p class="subtext">Choose how quickly pressure changes</p>
+                    </div>
+                </header>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Compression Rate</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                    </div>
+                    
+                    <div style="padding: 15px 0;">
+                        <div class="therapy-modes" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 20px;">
+                            <div class="mode-card rate-card" data-rate="beginner">
+                                <div class="mode-icon">
+                                    <i class="fas fa-feather"></i>
+                                </div>
+                                <h3 class="mode-title">Beginner</h3>
+                                <p class="mode-description">Slow, gentle compression</p>
+                            </div>
+                            
+                            <div class="mode-card rate-card" data-rate="normal">
+                                <div class="mode-icon">
+                                    <i class="fas fa-wind"></i>
+                                </div>
+                                <h3 class="mode-title">Normal</h3>
+                                <p class="mode-description">Standard compression</p>
+                            </div>
+                            
+                            <div class="mode-card rate-card" data-rate="fast">
+                                <div class="mode-icon">
+                                    <i class="fas fa-bolt"></i>
+                                </div>
+                                <h3 class="mode-title">Fast</h3>
+                                <p class="mode-description">Rapid compression</p>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px;">
+                            <button id="rateBackBtn" style="flex: 1; padding: 12px; background-color: var(--gray); color: var(--primary-green); border: none; border-radius: 8px; font-weight: 500;">
+                                Back
+                            </button>
+                            <button id="rateNextBtn" style="flex: 2; padding: 12px; background-color: var(--primary-green); color: white; border: none; border-radius: 8px; font-weight: 500; opacity: 0.6;" disabled>
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Add event listeners for compression rate selection
+            const rateCards = document.querySelectorAll('.rate-card');
+            let selectedRate = null;
+            
+            rateCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Remove active class from all rate cards
+                    rateCards.forEach(c => c.classList.remove('active'));
+                    // Add active class to selected card
+                    this.classList.add('active');
+                    
+                    // Store selected rate
+                    selectedRate = this.dataset.rate;
+                    
+                    // Enable next button
+                    const nextBtn = document.getElementById('rateNextBtn');
+                    nextBtn.style.opacity = '1';
+                    nextBtn.disabled = false;
+                });
+            });
+            
+            document.getElementById('rateBackBtn').addEventListener('click', function() {
+                showPressureSelection(mode);
+            });
+            
+            document.getElementById('rateNextBtn').addEventListener('click', function() {
+                if (selectedRate) {
+                    showDurationSelection(mode, pressure, selectedRate);
+                }
+            });
+        }
+
+        function showDurationSelection(mode, pressure, rate) {
+            const mainContent = document.getElementById('dashboard');
+            
+            mainContent.innerHTML = `
+                <header class="header">
+                    <div>
+                        <h1 class="greeting">Select Duration</h1>
+                        <p class="subtext">Choose therapy session length</p>
+                    </div>
+                </header>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Session Duration</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                    
+                    <div style="padding: 15px 0;">
+                        <div class="therapy-modes" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 20px;">
+                            <div class="mode-card duration-card" data-duration="60">
+                                <div class="mode-icon">
+                                    <i class="fas fa-hourglass-start"></i>
+                                </div>
+                                <h3 class="mode-title">60 min</h3>
+                                <p class="mode-description">Standard session</p>
+                            </div>
+                            
+                            <div class="mode-card duration-card" data-duration="90">
+                                <div class="mode-icon">
+                                    <i class="fas fa-hourglass-half"></i>
+                                </div>
+                                <h3 class="mode-title">90 min</h3>
+                                <p class="mode-description">Extended session</p>
+                            </div>
+                            
+                            <div class="mode-card duration-card" data-duration="120">
+                                <div class="mode-icon">
+                                    <i class="fas fa-hourglass-end"></i>
+                                </div>
+                                <h3 class="mode-title">120 min</h3>
+                                <p class="mode-description">Long session</p>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px;">
+                            <button id="durationBackBtn" style="flex: 1; padding: 12px; background-color: var(--gray); color: var(--primary-green); border: none; border-radius: 8px; font-weight: 500;">
+                                Back
+                            </button>
+                            <button id="durationStartBtn" style="flex: 2; padding: 12px; background-color: var(--primary-green); color: white; border: none; border-radius: 8px; font-weight: 500; opacity: 0.6;" disabled>
+                                Start Session
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Add event listeners for duration selection
+            const durationCards = document.querySelectorAll('.duration-card');
+            let selectedDuration = null;
+            
+            durationCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Remove active class from all duration cards
+                    durationCards.forEach(c => c.classList.remove('active'));
+                    // Add active class to selected card
+                    this.classList.add('active');
+                    
+                    // Store selected duration
+                    selectedDuration = parseInt(this.dataset.duration);
+                    
+                    // Enable start button
+                    const startBtn = document.getElementById('durationStartBtn');
+                    startBtn.style.opacity = '1';
+                    startBtn.disabled = false;
+                });
+            });
+            
+            document.getElementById('durationBackBtn').addEventListener('click', function() {
+                showCompressionRateSelection(mode, pressure);
+            });
+            
+            document.getElementById('durationStartBtn').addEventListener('click', function() {
+                if (selectedDuration) {
+                    startTherapySession(mode, pressure, rate, selectedDuration);
+                }
+            });
+        }
+
+        function startTherapySession(mode, pressure, rate, duration) {
+            console.log(`Starting therapy session with mode: ${mode}, pressure: ${pressure} ATA, rate: ${rate}, duration: ${duration} minutes`);
+            
+            // Here we would send the API request to the ESP32
+            // For now, we'll just display a session in progress UI
+            
+            const mainContent = document.getElementById('dashboard');
+            
+            mainContent.innerHTML = `
+                <header class="header">
+                    <div>
+                        <h1 class="greeting">Session in Progress</h1>
+                        <p class="subtext">${getSessionSubtext(mode)}</p>
+                    </div>
+                </header>
+                
+                <div class="cards-container">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Oxygen Level</h3>
+                            <div class="card-icon">
+                                <i class="fas fa-lungs"></i>
+                            </div>
+                        </div>
+                        <div class="card-value">98%</div>
+                        <div class="card-description">Optimal oxygen concentration</div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Temperature</h3>
+                            <div class="card-icon">
+                                <i class="fas fa-temperature-high"></i>
+                            </div>
+                        </div>
+                        <div class="card-value">22°C</div>
+                        <div class="card-description">Current cocoon temperature</div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Pressure</h3>
+                            <div class="card-icon">
+                                <i class="fas fa-tachometer-alt"></i>
+                            </div>
+                        </div>
+                        <div class="card-value" id="pressureDisplay">${pressure.toFixed(1)} ATA</div>
+                        <div class="card-description" id="pressureStatus">Pressurizing...</div>
+                    </div>
+                    
+                    <div class="card humidity-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Session</h3>
+                            <div class="card-icon">
+                                <i class="fas fa-stopwatch"></i>
+                            </div>
+                        </div>
+                        <div class="card-value" id="timerDisplay">00:00</div>
+                        <div class="card-description">Remaining: ${duration}:00</div>
+                    </div>
+                </div>
+                
+                <div class="card" style="margin-top: 20px;">
+                    <div class="card-header">
+                        <h3 class="card-title">Session Controls</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-sliders-h"></i>
+                        </div>
+                    </div>
+                    
+                    <div style="padding: 15px 0; display: flex; gap: 10px;">
+                        <button id="equalizeBtn" style="flex: 1; padding: 12px; background-color: var(--accent-blue); color: white; border: none; border-radius: 8px; font-weight: 500;">
+                            <i class="fas fa-balance-scale"></i> Equalize
+                        </button>
+                        <button id="intercomBtn" style="flex: 1; padding: 12px; background-color: var(--light-green); color: white; border: none; border-radius: 8px; font-weight: 500;">
+                            <i class="fas fa-microphone"></i> Intercom
+                        </button>
+                        <button id="stopSessionBtn" style="flex: 1; padding: 12px; background-color: #dc3545; color: white; border: none; border-radius: 8px; font-weight: 500;">
+                            <i class="fas fa-stop-circle"></i> Stop
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Set up session controls
+            let isEqualized = false;
+            let intercomActive = false;
+            let sessionTime = 0;
+            
+            // Update timer
+            const sessionTimer = setInterval(() => {
+                if (!isEqualized) {
+                    sessionTime++;
+                    const minutes = Math.floor(sessionTime / 60);
+                    const seconds = sessionTime % 60;
+                    document.getElementById('timerDisplay').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+            }, 1000);
+            
+            // Set up equalize button
+            document.getElementById('equalizeBtn').addEventListener('click', function() {
+                isEqualized = !isEqualized;
+                if (isEqualized) {
+                    this.style.backgroundColor = '#dc3545';
+                    document.getElementById('pressureStatus').textContent = 'Equalized - paused';
+                } else {
+                    this.style.backgroundColor = 'var(--accent-blue)';
+                    document.getElementById('pressureStatus').textContent = 'Pressurizing...';
+                }
+            });
+            
+            // Set up intercom button
+            document.getElementById('intercomBtn').addEventListener('click', function() {
+                intercomActive = !intercomActive;
+                if (intercomActive) {
+                    this.style.backgroundColor = '#28a745';
+                    // Here we would send an API request to activate the intercom
+                } else {
+                    this.style.backgroundColor = 'var(--light-green)';
+                    // Here we would send an API request to deactivate the intercom
+                }
+            });
+            
+            // Set up stop button
+            document.getElementById('stopSessionBtn').addEventListener('click', function() {
+                clearInterval(sessionTimer);
+                
+                // Show confirmation dialog
+                if (confirm('Are you sure you want to stop the session? The cocoon will start to depressurize.')) {
+                    // Here we would send an API request to stop the session
+                    
+                    // Force reset to dashboard
+                    const dashboardView = document.getElementById('dashboard');
+                    const views = document.querySelectorAll('.content-view');
+                    
+                    // Hide all views
+                    views.forEach(view => {
+                        view.classList.remove('active');
+                    });
+                    
+                    // Show dashboard and restore original content
+                    dashboardView.classList.add('active');
+                    
+                    // Reset dashboard to original state by reloading the page
+                    window.location.reload();
+                }
+            });
+            
+            // Simulate API calls to ESP32/PLC - you'll implement this later
+            // sendStartSessionCommand(mode, pressure, rate, duration);
+        }
+
+        // Helper function to get subtext based on selected mode
+        function getPressureSubtext(mode) {
+            switch(mode) {
+                case 'rest':
+                    return 'Rest & Relax mode uses continuous oxygen flow';
+                case 'wellness':
+                    return 'Health & Wellness mode uses intermittent oxygen flow';
+                case 'recovery':
+                    return 'Professional Recovery mode uses intermittent oxygen flow';
+                case 'custom':
+                    return 'Custom mode uses continuous oxygen flow';
+                default:
+                    return 'Select pressure level for your therapy session';
+            }
+        }
+
+        // Helper function to get session subtext
+        function getSessionSubtext(mode) {
+            switch(mode) {
+                case 'rest':
+                    return 'Rest & Relax therapy with continuous oxygen flow';
+                case 'wellness':
+                    return 'Health & Wellness therapy with intermittent oxygen flow';
+                case 'recovery':
+                    return 'Professional Recovery therapy with intermittent oxygen flow';
+                case 'custom':
+                    return 'Custom therapy with continuous oxygen flow';
+                default:
+                    return 'Hyperbaric oxygen therapy session in progress';
+            }
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             // Fix for iOS - ensure document is fully loaded
@@ -2039,7 +2889,7 @@
             });
             
             // Setup therapy mode selection
-            selectTherapyMode();
+            initTherapyModeSelection();
             
             // Display dashboard view by default
             const views = document.querySelectorAll('.content-view');
