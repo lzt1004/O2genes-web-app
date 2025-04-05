@@ -2717,7 +2717,7 @@
                             </div>
                         </div>
                         <div class="card-value" id="timerDisplay">00:00</div>
-                        <div class="card-description">Remaining: ${duration}:00</div>
+                        <div class="card-description">Remaining: ${duration} min</div>
                     </div>
                 </div>
                 
@@ -2748,13 +2748,27 @@
             let intercomActive = false;
             let sessionTime = 0;
             
-            // Update timer
+            // Update timer and remaining time
+            // Update timer and remaining time
             const sessionTimer = setInterval(() => {
                 if (!isEqualized) {
+                    // Increment session time
                     sessionTime++;
                     const minutes = Math.floor(sessionTime / 60);
                     const seconds = sessionTime % 60;
                     document.getElementById('timerDisplay').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    
+                    // Calculate and update remaining time (only showing minutes)
+                    const remainingMinutes = Math.max(0, duration - Math.ceil(sessionTime / 60));
+                    
+                    // Update using a more reliable approach
+                    const descriptions = document.querySelectorAll('.card-description');
+                    for (let desc of descriptions) {
+                        if (desc.textContent.includes('Remaining')) {
+                            desc.textContent = `Remaining: ${remainingMinutes} min`;
+                            break;
+                        }
+                    }
                 }
             }, 1000);
             
