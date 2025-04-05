@@ -2466,10 +2466,8 @@
             });
             
             document.getElementById('pressureBackBtn').addEventListener('click', function() {
-                // Restore previous content
-                mainContent.innerHTML = previousContent;
-                // Reinitialize therapy mode selection
-                initTherapyModeSelection();
+                // Navigate back to dashboard view properly
+                window.location.reload();
             });
             
             document.getElementById('pressureNextBtn').addEventListener('click', function() {
