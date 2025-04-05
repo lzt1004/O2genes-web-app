@@ -1696,6 +1696,9 @@
             }
         }
 
+        .therapy-section + .therapy-section {
+            margin-top: 20px;
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -1852,7 +1855,7 @@
                     </div>
                 </div>
                 
-                <div class="therapy-section">
+                <div class="therapy-section" style="margin-top: 20px;">
                     <h2 class="section-header">Therapy Mode</h2>
                     <div class="therapy-modes">
                         <div class="mode-card" data-mode="rest">
@@ -3109,6 +3112,117 @@
             }
         }
 
+        // Beauty Lights Controls
+        function initializeBeautyLightsControls() {
+            console.log("Initializing beauty lights controls");
+            const lightCards = document.querySelectorAll('.light-card');
+            
+            lightCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const lightType = this.dataset.light;
+                    const colorOrStatus = this.dataset.color || this.dataset.status;
+                    
+                    // Visual feedback
+                    selectLightOption(lightType, colorOrStatus);
+                    
+                    // Send command to ESP32
+                    sendLightCommand(lightType, colorOrStatus);
+                    
+                    // Show toast notification
+                    showToast(`${capitalizeFirstLetter(lightType)} lights set to ${colorOrStatus}`);
+                });
+            });
+        }
+
+        // Function to provide visual feedback on selection
+        function selectLightOption(lightType, colorOrStatus) {
+            // Remove active class from all cards of same light type
+            const relatedCards = document.querySelectorAll(`.light-card[data-light="${lightType}"]`);
+            relatedCards.forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            // Add active class to selected card
+            const selectedCard = document.querySelector(`.light-card[data-light="${lightType}"][data-color="${colorOrStatus}"], .light-card[data-light="${lightType}"][data-status="${colorOrStatus}"]`);
+            if (selectedCard) {
+                selectedCard.classList.add('active');
+            }
+        }
+
+        // Function to send light command to ESP32
+        function sendLightCommand(lightType, colorOrStatus) {
+            // Log the action (for testing)
+            console.log(`Sending light command: ${lightType} - ${colorOrStatus}`);
+            
+            // Prepare API endpoint and data
+            let endpoint = '';
+            let data = {};
+            
+            switch(lightType) {
+                case 'cocoon':
+                    endpoint = '/api/lights/cocoon';
+                    data = { color: colorOrStatus };
+                    break;
+                case 'door':
+                    endpoint = '/api/lights/door';
+                    data = { status: colorOrStatus };
+                    break;
+                case 'ceiling':
+                    endpoint = '/api/lights/ceiling';
+                    data = { color: colorOrStatus };
+                    break;
+            }
+            
+            // In a production environment, replace with actual ESP32 IP or hostname
+            const espIpAddress = '192.168.1.100'; // Replace with your ESP32's IP
+            
+            // Send request to ESP32
+            fetch(`http://${espIpAddress}${endpoint}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                showToast('Error setting lights. Please try again.');
+            });
+        }
+
+        // Helper function to show toast notifications for light actions
+        function showToast(message) {
+            // Remove existing toast if any
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+            
+            // Create new toast
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            
+            // Add to document
+            document.body.appendChild(toast);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (document.body.contains(toast)) {
+                    document.body.removeChild(toast);
+                }
+            }, 3000);
+        }
+
+        // Helper function to capitalize first letter
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             // Fix for iOS - ensure document is fully loaded
@@ -3644,117 +3758,6 @@
                 
                 // Add to the video container (at the beginning to show it's new)
                 videoContainer.insertBefore(videoCard, videoContainer.firstChild);
-            }
-
-            // Beauty Lights Controls
-            function initializeBeautyLightsControls() {
-                console.log("Initializing beauty lights controls");
-                const lightCards = document.querySelectorAll('.light-card');
-                
-                lightCards.forEach(card => {
-                    card.addEventListener('click', function() {
-                        const lightType = this.dataset.light;
-                        const colorOrStatus = this.dataset.color || this.dataset.status;
-                        
-                        // Visual feedback
-                        selectLightOption(lightType, colorOrStatus);
-                        
-                        // Send command to ESP32
-                        sendLightCommand(lightType, colorOrStatus);
-                        
-                        // Show toast notification
-                        showToast(`${capitalizeFirstLetter(lightType)} lights set to ${colorOrStatus}`);
-                    });
-                });
-            }
-
-            // Function to provide visual feedback on selection
-            function selectLightOption(lightType, colorOrStatus) {
-                // Remove active class from all cards of same light type
-                const relatedCards = document.querySelectorAll(`.light-card[data-light="${lightType}"]`);
-                relatedCards.forEach(card => {
-                    card.classList.remove('active');
-                });
-                
-                // Add active class to selected card
-                const selectedCard = document.querySelector(`.light-card[data-light="${lightType}"][data-color="${colorOrStatus}"], .light-card[data-light="${lightType}"][data-status="${colorOrStatus}"]`);
-                if (selectedCard) {
-                    selectedCard.classList.add('active');
-                }
-            }
-
-            // Function to send light command to ESP32
-            function sendLightCommand(lightType, colorOrStatus) {
-                // Log the action (for testing)
-                console.log(`Sending light command: ${lightType} - ${colorOrStatus}`);
-                
-                // Prepare API endpoint and data
-                let endpoint = '';
-                let data = {};
-                
-                switch(lightType) {
-                    case 'cocoon':
-                        endpoint = '/api/lights/cocoon';
-                        data = { color: colorOrStatus };
-                        break;
-                    case 'door':
-                        endpoint = '/api/lights/door';
-                        data = { status: colorOrStatus };
-                        break;
-                    case 'ceiling':
-                        endpoint = '/api/lights/ceiling';
-                        data = { color: colorOrStatus };
-                        break;
-                }
-                
-                // In a production environment, replace with actual ESP32 IP or hostname
-                const espIpAddress = '192.168.1.100'; // Replace with your ESP32's IP
-                
-                // Send request to ESP32
-                fetch(`http://${espIpAddress}${endpoint}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Success:', data);
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                    showToast('Error setting lights. Please try again.');
-                });
-            }
-
-            // Helper function to show toast notifications for light actions
-            function showToast(message) {
-                // Remove existing toast if any
-                const existingToast = document.querySelector('.toast');
-                if (existingToast) {
-                    existingToast.remove();
-                }
-                
-                // Create new toast
-                const toast = document.createElement('div');
-                toast.className = 'toast';
-                toast.textContent = message;
-                
-                // Add to document
-                document.body.appendChild(toast);
-                
-                // Auto remove after 3 seconds
-                setTimeout(() => {
-                    if (document.body.contains(toast)) {
-                        document.body.removeChild(toast);
-                    }
-                }, 3000);
-            }
-
-            // Helper function to capitalize first letter
-            function capitalizeFirstLetter(string) {
-                return string.charAt(0).toUpperCase() + string.slice(1);
             }
         }
 
