@@ -1597,6 +1597,105 @@
             }
         }
 
+        /* Beauty Lights Section Styles */
+        .lights-section {
+            margin-top: 15px;
+        }
+
+        .light-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--light-green);
+            margin-bottom: 10px;
+            padding-left: 5px;
+            border-left: 3px solid var(--accent-blue);
+        }
+
+        .lights-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        /* Light card styles */
+        .light-card {
+            border: 2px solid var(--gray);
+            border-radius: 12px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .light-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .light-card.active {
+            background-color: rgba(28, 78, 59, 0.08);
+            border-color: var(--primary-green);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .light-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        .light-name {
+            font-weight: 500;
+            font-size: 12px;
+            margin: 0;
+        }
+
+        /* Light animation for flash mode preview */
+        .light-card[data-color="flash"] .light-icon i {
+            animation: flash-light 2s infinite;
+        }
+
+        @keyframes flash-light {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        /* Light animation for random mode preview */
+        .light-card[data-color="random"] .light-icon i {
+            animation: random-color 4s infinite;
+        }
+
+        @keyframes random-color {
+            0% { color: #FF0000; }
+            25% { color: #00FF00; }
+            50% { color: #0000FF; }
+            75% { color: #FFFF00; }
+            100% { color: #FF0000; }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .lights-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .lights-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -1786,6 +1885,159 @@
                             </div>
                             <h3 class="mode-title">Custom</h3>
                             <p class="mode-description">Continuous oxygen flow</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Beauty Lights Section -->
+                <div class="therapy-section">
+                    <h2 class="section-header">Beauty Lights</h2>
+                    
+                    <!-- Cocoon Lights -->
+                    <div class="lights-section">
+                        <h3 class="light-title">Cocoon Lights</h3>
+                        <div class="lights-grid">
+                            <div class="light-card" data-light="cocoon" data-color="red">
+                                <div class="light-icon" style="background-color: rgba(255, 0, 0, 0.1);">
+                                    <i class="fas fa-lightbulb" style="color: #FF0000;"></i>
+                                </div>
+                                <h3 class="light-name">Red</h3>
+                            </div>
+                            
+                            <div class="light-card" data-light="cocoon" data-color="green">
+                                <div class="light-icon" style="background-color: rgba(0, 128, 0, 0.1);">
+                                    <i class="fas fa-lightbulb" style="color: #008000;"></i>
+                                </div>
+                                <h3 class="light-name">Green</h3>
+                            </div>
+                            
+                            <div class="light-card" data-light="cocoon" data-color="blue">
+                                <div class="light-icon" style="background-color: rgba(0, 0, 255, 0.1);">
+                                    <i class="fas fa-lightbulb" style="color: #0000FF;"></i>
+                                </div>
+                                <h3 class="light-name">Blue</h3>
+                            </div>
+                            
+                            <div class="light-card" data-light="cocoon" data-color="flash">
+                                <div class="light-icon" style="background-color: rgba(138, 43, 226, 0.1);">
+                                    <i class="fas fa-bolt" style="color: #8A2BE2;"></i>
+                                </div>
+                                <h3 class="light-name">Flash</h3>
+                            </div>
+                        </div>
+                        
+                        <div class="lights-grid" style="margin-top: 10px;">
+                            <div class="light-card" data-light="cocoon" data-color="random">
+                                <div class="light-icon" style="background-color: rgba(255, 105, 180, 0.1);">
+                                    <i class="fas fa-random" style="color: #FF69B4;"></i>
+                                </div>
+                                <h3 class="light-name">Random</h3>
+                            </div>
+                            
+                            <div class="light-card" data-light="cocoon" data-color="warm">
+                                <div class="light-icon" style="background-color: rgba(255, 165, 0, 0.1);">
+                                    <i class="fas fa-lightbulb" style="color: #FFA500;"></i>
+                                </div>
+                                <h3 class="light-name">Warm</h3>
+                            </div>
+                            
+                            <div class="light-card" data-light="cocoon" data-color="white">
+                                <div class="light-icon" style="background-color: rgba(200, 200, 200, 0.1);">
+                                    <i class="fas fa-lightbulb" style="color: #CCCCCC;"></i>
+                                </div>
+                                <h3 class="light-name">White</h3>
+                            </div>
+                            
+                            <div class="light-card" data-light="cocoon" data-color="off">
+                                <div class="light-icon" style="background-color: rgba(50, 50, 50, 0.1);">
+                                    <i class="fas fa-power-off" style="color: #333333;"></i>
+                                </div>
+                                <h3 class="light-name">Turn Off</h3>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Door Lights -->
+                    <div class="lights-section" style="margin-top: 20px;">
+                        <h3 class="light-title">Door Lights</h3>
+                        <div class="lights-grid" style="grid-template-columns: repeat(2, 1fr);">
+                            <div class="light-card" data-light="door" data-status="on">
+                                <div class="light-icon" style="background-color: rgba(255, 215, 0, 0.1);">
+                                    <i class="fas fa-door-open" style="color: #FFD700;"></i>
+                                </div>
+                                <h3 class="light-name">On</h3>
+                            </div>
+                            
+                            <div class="light-card" data-light="door" data-status="off">
+                                <div class="light-icon" style="background-color: rgba(50, 50, 50, 0.1);">
+                                    <i class="fas fa-door-closed" style="color: #333333;"></i>
+                                </div>
+                                <h3 class="light-name">Off</h3>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Ceiling Lights -->
+                    <div class="lights-section" style="margin-top: 20px;">
+                        <h3 class="light-title">Ceiling Lights</h3>
+                        <div class="lights-grid">
+                            <div class="light-card" data-light="ceiling" data-color="red">
+                                <div class="light-icon" style="background-color: rgba(255, 0, 0, 0.1);">
+                                    <i class="fas fa-lightbulb" style="color: #FF0000;"></i>
+                                </div>
+                                <h3 class="light-name">Red</h3>
+                            </div>
+                            
+                            <div class="light-card" data-light="ceiling" data-color="green">
+                                <div class="light-icon" style="background-color: rgba(0, 128, 0, 0.1);">
+                                    <i class="fas fa-lightbulb" style="color: #008000;"></i>
+                                </div>
+                                <h3 class="light-name">Green</h3>
+                            </div>
+                            
+                            <div class="light-card" data-light="ceiling" data-color="blue">
+                                <div class="light-icon" style="background-color: rgba(0, 0, 255, 0.1);">
+                                    <i class="fas fa-lightbulb" style="color: #0000FF;"></i>
+                                </div>
+                                <h3 class="light-name">Blue</h3>
+                            </div>
+                            
+                            <div class="light-card" data-light="ceiling" data-color="flash">
+                                <div class="light-icon" style="background-color: rgba(138, 43, 226, 0.1);">
+                                    <i class="fas fa-bolt" style="color: #8A2BE2;"></i>
+                                </div>
+                                <h3 class="light-name">Flash</h3>
+                            </div>
+                        </div>
+                        
+                        <div class="lights-grid" style="margin-top: 10px;">
+                            <div class="light-card" data-light="ceiling" data-color="random">
+                                <div class="light-icon" style="background-color: rgba(255, 105, 180, 0.1);">
+                                    <i class="fas fa-random" style="color: #FF69B4;"></i>
+                                </div>
+                                <h3 class="light-name">Random</h3>
+                            </div>
+                            
+                            <div class="light-card" data-light="ceiling" data-color="warm">
+                                <div class="light-icon" style="background-color: rgba(255, 165, 0, 0.1);">
+                                    <i class="fas fa-lightbulb" style="color: #FFA500;"></i>
+                                </div>
+                                <h3 class="light-name">Warm</h3>
+                            </div>
+                            
+                            <div class="light-card" data-light="ceiling" data-color="white">
+                                <div class="light-icon" style="background-color: rgba(200, 200, 200, 0.1);">
+                                    <i class="fas fa-lightbulb" style="color: #CCCCCC;"></i>
+                                </div>
+                                <h3 class="light-name">White</h3>
+                            </div>
+                            
+                            <div class="light-card" data-light="ceiling" data-color="off">
+                                <div class="light-icon" style="background-color: rgba(50, 50, 50, 0.1);">
+                                    <i class="fas fa-power-off" style="color: #333333;"></i>
+                                </div>
+                                <h3 class="light-name">Turn Off</h3>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2906,6 +3158,11 @@
             // Setup therapy mode selection
             initTherapyModeSelection();
             
+            // Setup beauty lights controls
+            setTimeout(() => {
+                initializeBeautyLightsControls();
+            }, 2500);
+            
             // Display dashboard view by default
             const views = document.querySelectorAll('.content-view');
             views.forEach(view => {
@@ -2913,6 +3170,7 @@
                     view.classList.remove('active');
                 }
             });
+        });
         // Authentication functionality
         function initializeAuth() {
             // Tab switching
@@ -3117,7 +3375,6 @@
             setTimeout(() => {
                 initializeAuth();
             }, 2500); // Wait for loading animation to finish
-        });
         });
 
         // Video Upload Functionality
@@ -3387,6 +3644,117 @@
                 
                 // Add to the video container (at the beginning to show it's new)
                 videoContainer.insertBefore(videoCard, videoContainer.firstChild);
+            }
+
+            // Beauty Lights Controls
+            function initializeBeautyLightsControls() {
+                console.log("Initializing beauty lights controls");
+                const lightCards = document.querySelectorAll('.light-card');
+                
+                lightCards.forEach(card => {
+                    card.addEventListener('click', function() {
+                        const lightType = this.dataset.light;
+                        const colorOrStatus = this.dataset.color || this.dataset.status;
+                        
+                        // Visual feedback
+                        selectLightOption(lightType, colorOrStatus);
+                        
+                        // Send command to ESP32
+                        sendLightCommand(lightType, colorOrStatus);
+                        
+                        // Show toast notification
+                        showToast(`${capitalizeFirstLetter(lightType)} lights set to ${colorOrStatus}`);
+                    });
+                });
+            }
+
+            // Function to provide visual feedback on selection
+            function selectLightOption(lightType, colorOrStatus) {
+                // Remove active class from all cards of same light type
+                const relatedCards = document.querySelectorAll(`.light-card[data-light="${lightType}"]`);
+                relatedCards.forEach(card => {
+                    card.classList.remove('active');
+                });
+                
+                // Add active class to selected card
+                const selectedCard = document.querySelector(`.light-card[data-light="${lightType}"][data-color="${colorOrStatus}"], .light-card[data-light="${lightType}"][data-status="${colorOrStatus}"]`);
+                if (selectedCard) {
+                    selectedCard.classList.add('active');
+                }
+            }
+
+            // Function to send light command to ESP32
+            function sendLightCommand(lightType, colorOrStatus) {
+                // Log the action (for testing)
+                console.log(`Sending light command: ${lightType} - ${colorOrStatus}`);
+                
+                // Prepare API endpoint and data
+                let endpoint = '';
+                let data = {};
+                
+                switch(lightType) {
+                    case 'cocoon':
+                        endpoint = '/api/lights/cocoon';
+                        data = { color: colorOrStatus };
+                        break;
+                    case 'door':
+                        endpoint = '/api/lights/door';
+                        data = { status: colorOrStatus };
+                        break;
+                    case 'ceiling':
+                        endpoint = '/api/lights/ceiling';
+                        data = { color: colorOrStatus };
+                        break;
+                }
+                
+                // In a production environment, replace with actual ESP32 IP or hostname
+                const espIpAddress = '192.168.1.100'; // Replace with your ESP32's IP
+                
+                // Send request to ESP32
+                fetch(`http://${espIpAddress}${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    showToast('Error setting lights. Please try again.');
+                });
+            }
+
+            // Helper function to show toast notifications for light actions
+            function showToast(message) {
+                // Remove existing toast if any
+                const existingToast = document.querySelector('.toast');
+                if (existingToast) {
+                    existingToast.remove();
+                }
+                
+                // Create new toast
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.textContent = message;
+                
+                // Add to document
+                document.body.appendChild(toast);
+                
+                // Auto remove after 3 seconds
+                setTimeout(() => {
+                    if (document.body.contains(toast)) {
+                        document.body.removeChild(toast);
+                    }
+                }, 3000);
+            }
+
+            // Helper function to capitalize first letter
+            function capitalizeFirstLetter(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
             }
         }
 
