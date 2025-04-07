@@ -2536,6 +2536,116 @@
     </div>
     
     <script>
+        // ESP32 Connection Configuration
+        const espConfig = {
+            ip: '192.168.1.100', // Replace with your ESP32's IP address
+            baseUrl: 'http://192.168.1.100',
+            wsUrl: 'ws://192.168.1.100/data'
+        };
+
+        // Helper function for API calls to ESP32
+        async function callEspApi(endpoint, method = 'GET', data = null) {
+            try {
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+                
+                if (data) {
+                    options.body = JSON.stringify(data);
+                }
+                
+                const response = await fetch(`${espConfig.baseUrl}${endpoint}`, options);
+                
+                if (!response.ok) {
+                    throw new Error(`API call failed: ${response.status}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('API Error:', error);
+                showToast('Connection error. Please check if device is online.');
+                return { success: false, error: error.message };
+            }
+        }
+
+        // WebSocket connection for real-time data
+        let wsConnection = null;
+
+        function setupWebSocket() {
+            if (wsConnection) {
+                wsConnection.close();
+            }
+            
+            wsConnection = new WebSocket(espConfig.wsUrl);
+            
+            wsConnection.onopen = () => {
+                console.log('WebSocket connection established');
+            };
+            
+            wsConnection.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    updateSensorData(data);
+                } catch (error) {
+                    console.error('WebSocket data error:', error);
+                }
+            };
+            
+            wsConnection.onerror = (error) => {
+                console.error('WebSocket error:', error);
+            };
+            
+            wsConnection.onclose = () => {
+                console.log('WebSocket connection closed');
+                // Try to reconnect after a delay
+                setTimeout(setupWebSocket, 5000);
+            }
+        }
+
+        // Function to update UI with sensor data
+        function updateSensorData(data) {
+            // Update the cards with sensor data
+            if (data.oxygen !== undefined) {
+                document.querySelector('.card:nth-child(1) .card-value').textContent = `${data.oxygen}%`;
+            }
+            
+            if (data.temperature !== undefined) {
+                document.querySelector('.card:nth-child(2) .card-value').textContent = `${data.temperature}°C`;
+            }
+            
+            if (data.pressure !== undefined) {
+                document.querySelector('.card:nth-child(3) .card-value').textContent = `${data.pressure.toFixed(1)} ATA`;
+                
+                // Update status text if available
+                const statusText = document.getElementById('pressureStatus');
+                if (statusText) {
+                    if (data.equalizing) {
+                        statusText.textContent = 'Equalized - paused';
+                    } else if (data.pressurizing) {
+                        statusText.textContent = 'Pressurizing...';
+                    } else if (data.depressurizing) {
+                        statusText.textContent = 'Depressurizing...';
+                    } else {
+                        statusText.textContent = 'Stable';
+                    }
+                }
+            }
+            
+            if (data.humidity !== undefined) {
+                document.querySelector('.card:nth-child(4) .card-value').textContent = `${data.humidity}%`;
+            }
+            
+            if (data.sessionTime !== undefined && document.getElementById('timerDisplay')) {
+                const minutes = Math.floor(data.sessionTime / 60);
+                const seconds = data.sessionTime % 60;
+                document.getElementById('timerDisplay').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+        
         // Create dynamic oxygen particles - optimized for iOS
         function generateOxygenEffect() {
             const oxygenBg = document.getElementById('oxygenBackground');
@@ -2650,6 +2760,26 @@
                 setTimeout(() => {
                     initTherapyModeSelection();
                 }, 100);
+            }
+            // If navigating to dashboard, connect to WebSocket for real-time data
+            if (viewId === 'dashboard') {
+                setTimeout(() => {
+                    setupWebSocket();
+                    
+                    // Also fetch current status
+                    callEspApi('/api/status', 'GET')
+                        .then(response => {
+                            if (response && response.success && response.data) {
+                                updateSensorData(response.data);
+                            }
+                        });
+                }, 100);
+            } else {
+                // If leaving dashboard, close WebSocket to save resources
+                if (wsConnection) {
+                    wsConnection.close();
+                    wsConnection = null;
+                }
             }
         }
 
@@ -2917,8 +3047,20 @@
         function startTherapySession(mode, pressure, rate, duration) {
             console.log(`Starting therapy session with mode: ${mode}, pressure: ${pressure} ATA, rate: ${rate}, duration: ${duration} minutes`);
             
-            // Here we would send the API request to the ESP32
-            // For now, we'll just display a session in progress UI
+            // Send therapy parameters to ESP32
+            callEspApi('/api/therapy/start', 'POST', {
+                mode: mode,
+                pressure: pressure,
+                rate: rate,
+                duration: duration
+            })
+            .then(response => {
+                if (!response || !response.success) {
+                    showToast('Failed to start therapy session');
+                    // Don't proceed with UI update if there was an error
+                    return;
+                }
+            });
             
             const mainContent = document.getElementById('dashboard');
             
@@ -3029,53 +3171,52 @@
             
             // Set up equalize button
             document.getElementById('equalizeBtn').addEventListener('click', function() {
-                isEqualized = !isEqualized;
-                if (isEqualized) {
-                    this.style.backgroundColor = '#dc3545';
-                    document.getElementById('pressureStatus').textContent = 'Equalized - paused';
-                } else {
-                    this.style.backgroundColor = 'var(--accent-blue)';
-                    document.getElementById('pressureStatus').textContent = 'Pressurizing...';
-                }
-            });
-            
-            // Set up intercom button
-            document.getElementById('intercomBtn').addEventListener('click', function() {
-                intercomActive = !intercomActive;
-                if (intercomActive) {
-                    this.style.backgroundColor = '#28a745';
-                    // Here we would send an API request to activate the intercom
-                } else {
-                    this.style.backgroundColor = 'var(--light-green)';
-                    // Here we would send an API request to deactivate the intercom
-                }
-            });
-            
-            // Set up stop button
-            document.getElementById('stopSessionBtn').addEventListener('click', function() {
-                clearInterval(sessionTimer);
+                // Send equalize command to ESP32
+                callEspApi('/api/therapy/equalize', 'POST')
+                    .then(response => {
+                        if (response && response.success) {
+                            // Visual feedback based on the current state
+                            const isEqualized = response.isEqualized || false;
+                            this.style.backgroundColor = isEqualized ? '#dc3545' : 'var(--accent-blue)';
+                            document.getElementById('pressureStatus').textContent = isEqualized ? 
+                                'Equalized - paused' : 'Pressurizing...';
+                        }
+                    });
                 
+                // Also provide immediate visual feedback while waiting for response
+                const currentColor = this.style.backgroundColor;
+                this.style.backgroundColor = currentColor === 'rgb(220, 53, 69)' ? 
+                    'var(--accent-blue)' : '#dc3545';
+            });
+
+            document.getElementById('intercomBtn').addEventListener('click', function() {
+                // Send intercom command to ESP32
+                callEspApi('/api/therapy/intercom', 'POST')
+                    .then(response => {
+                        if (response && response.success) {
+                            // Visual feedback based on the current state
+                            const isActive = response.isActive || false;
+                            this.style.backgroundColor = isActive ? '#28a745' : 'var(--light-green)';
+                        }
+                    });
+                
+                // Also provide immediate visual feedback
+                const currentColor = this.style.backgroundColor;
+                this.style.backgroundColor = currentColor === 'rgb(40, 167, 69)' ? 
+                    'var(--light-green)' : '#28a745';
+            });
+
+            document.getElementById('stopSessionBtn').addEventListener('click', function() {
                 // Show confirmation dialog
                 if (confirm('Are you sure you want to stop the session? The cocoon will start to depressurize.')) {
-                    // Here we would send an API request to stop the session
-                    
-                    // Force reset to dashboard
-                    const dashboardView = document.getElementById('dashboard');
-                    const views = document.querySelectorAll('.content-view');
-                    
-                    // Hide all views
-                    views.forEach(view => {
-                        view.classList.remove('active');
-                    });
-                    
-                    // Show dashboard and restore original content
-                    dashboardView.classList.add('active');
-                    
-                    // Reset dashboard to original state by reloading the page
-                    window.location.reload();
+                    // Send stop command to ESP32
+                    callEspApi('/api/therapy/stop', 'POST')
+                        .then(response => {
+                            // Regardless of response, return to dashboard
+                            window.location.reload();
+                        });
                 }
             });
-            
             // Simulate API calls to ESP32/PLC - you'll implement this later
             // sendStartSessionCommand(mode, pressure, rate, duration);
         }
@@ -3172,26 +3313,18 @@
                     data = { color: colorOrStatus };
                     break;
             }
-            
-            // In a production environment, replace with actual ESP32 IP or hostname
-            const espIpAddress = '192.168.1.100'; // Replace with your ESP32's IP
-            
             // Send request to ESP32
-            fetch(`http://${espIpAddress}${endpoint}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                showToast('Error setting lights. Please try again.');
-            });
+            callEspApi(endpoint, 'POST', data)
+                .then(response => {
+                    if (response && response.success) {
+                        console.log('Success:', response);
+                    } else {
+                        console.error('Error setting lights');
+                    }
+                });
+            
+            // Provide visual feedback immediately (don't wait for API response)
+            showToast(`${capitalizeFirstLetter(lightType)} lights set to ${colorOrStatus}`);
         }
 
         // Helper function to show toast notifications for light actions
@@ -3246,6 +3379,21 @@
                         }, 1000);
                     }
                 }, 2000);
+                // Connect to ESP32 and get initial data
+                setTimeout(function() {
+                    // Fetch initial status from ESP32
+                    callEspApi('/api/status', 'GET')
+                        .then(response => {
+                            if (response && response.success && response.data) {
+                                updateSensorData(response.data);
+                            }
+                        });
+                        
+                    // Start WebSocket connection for real-time updates if on dashboard
+                    if (document.getElementById('dashboard').classList.contains('active')) {
+                        setupWebSocket();
+                    }
+                }, 2500);
             }
             
             // Setup event listeners
